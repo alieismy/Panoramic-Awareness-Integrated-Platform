@@ -1,0 +1,11 @@
+server:
+  port: 8888
+  ## https 配置
+  ssl:
+    enabled: true
+    key-alias: paip
+    key-store-password: Abcd123456
+    key-store: classpath:paip.p12
+    key-store-type: PKCS12
+
+

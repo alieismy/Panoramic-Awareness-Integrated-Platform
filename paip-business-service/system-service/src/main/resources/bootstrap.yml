@@ -1,0 +1,15 @@
+server:
+  port: 5010
+
+spring:
+  application:
+    name: system-service
+
+  # FLYWAY (FlywayProperties)
+  flyway:
+    enabled: true
+    table: PAIP_SCHEMA_VERSION
+    baseline-on-migrate: true
+    validate-on-migrate: false
+    clean-disabled: true
+    locations: classpath:db/migration

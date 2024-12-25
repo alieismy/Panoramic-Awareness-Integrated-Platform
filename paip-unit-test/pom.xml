@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.indusec</groupId>
+        <artifactId>integrated-platform</artifactId>
+        <version>3.0.0</version>
+    </parent>
+
+    <artifactId>paip-unit-test</artifactId>
+    <packaging>pom</packaging>
+    <name>${project.artifactId}</name>
+    <description>单元测试</description>
+
+    <dependencies>
+        <!-- common -->
+        <dependency>
+            <groupId>com.indusec</groupId>
+            <artifactId>paip-auth-client-spring-boot-starter</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.indusec</groupId>
+            <artifactId>paip-common-core</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.indusec</groupId>
+            <artifactId>paip-common-spring-boot-starter</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.indusec</groupId>
+            <artifactId>paip-db-spring-boot-starter</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.indusec</groupId>
+            <artifactId>paip-elasticsearch-spring-boot-starter</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.indusec</groupId>
+            <artifactId>paip-log-spring-boot-starter</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.indusec</groupId>
+            <artifactId>paip-redis-spring-boot-starter</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.indusec</groupId>
+            <artifactId>paip-loadbalancer-spring-boot-starter</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.indusec</groupId>
+            <artifactId>paip-sentinel-spring-boot-starter</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.indusec</groupId>
+            <artifactId>paip-swagger2-spring-boot-starter</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+
+        <!-- uaa-server -->
+        <dependency>
+            <groupId>com.indusec</groupId>
+            <artifactId>paip-uaa-server</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+
+        <!-- business service -->
+        <dependency>
+            <groupId>com.indusec</groupId>
+            <artifactId>user-service</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.indusec</groupId>
+            <artifactId>code-generator</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.indusec</groupId>
+            <artifactId>file-service</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.indusec</groupId>
+            <artifactId>search-client</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.indusec</groupId>
+            <artifactId>search-server</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.indusec</groupId>
+            <artifactId>system-service</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+
+        <!-- gateway-server -->
+        <dependency>
+            <groupId>com.indusec</groupId>
+            <artifactId>paip-gateway-server</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+
+        <!-- monitor-server -->
+        <dependency>
+            <groupId>com.indusec</groupId>
+            <artifactId>log-center</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.indusec</groupId>
+            <artifactId>monitor-center</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <!--argLine>
+                        -javaagent:${settings.localRepository}/org/jacoco/org.jacoco.agent/${jacoco.version}/org.jacoco.agent-${jacoco.version}-runtime.jar=destfile=${project.basedir}/target/coverage-reports/jacoco-unit.exec
+                    </argLine-->
+                    <testFailureIgnore>true</testFailureIgnore>
+                    <argLine>${argLine} -Xms256m -Xmx2048m</argLine>
+                    <forkCount>1</forkCount>
+                    <runOrder>random</runOrder>
+                </configuration>
+            </plugin>
+            <!--检查代码覆盖率的插件配置-->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
+                <configuration>
+                    <!--指定生成.exec文件的存放位置
+                    <destFile>target/coverage-reports/jacoco-unit.exec</destFile>-->
+                    <!--Jacoco是根据.exec文件生成最终的报告，所以需指定.exec的存放路径
+                    <dataFile>target/coverage-reports/jacoco-unit.exec</dataFile>
+                    <output>file</output>
+                    <append>true</append>-->
+                    <excludes>
+                        <exclude>com.xxl.job/**</exclude>
+                        <exclude>paip-web/**</exclude>
+                    </excludes>
+                    <!-- rules里面指定覆盖规则, 需要有下面的goal:check才会执行这个规则校验 -->
+                    <rules>
+                        <rule implementation="org.jacoco.maven.RuleConfiguration">
+                            <element>BUNDLE</element>
+                            <limits>
+                                <!-- 指定方法覆盖到50% -->
+                                <limit implementation="org.jacoco.report.check.Limit">
+                                    <counter>METHOD</counter>
+                                    <value>COVEREDRATIO</value>
+                                    <minimum>0.50</minimum>
+                                </limit>
+                                <!-- 指定分支覆盖到50% -->
+                                <limit implementation="org.jacoco.report.check.Limit">
+                                    <counter>BRANCH</counter>
+                                    <value>COVEREDRATIO</value>
+                                    <minimum>0.50</minimum>
+                                </limit>
+                                <!-- 指定类覆盖到100%，不能遗失任何类 -->
+                                <limit implementation="org.jacoco.report.check.Limit">
+                                    <counter>CLASS</counter>
+                                    <value>MISSEDCOUNT</value>
+                                    <maximum>0</maximum>
+                                </limit>
+                            </limits>
+                        </rule>
+                    </rules>
+
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>jacoco-report</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report-aggregate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>

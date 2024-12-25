@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.indusec.common.filter.TenantFilter, \
+com.indusec.common.filter.LoginUserFilter

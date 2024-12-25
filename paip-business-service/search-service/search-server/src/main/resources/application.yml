@@ -1,0 +1,16 @@
+spring:
+  elasticsearch:
+    rest:
+      uris: ${paip.elasticsearch.uri}
+      username: ${paip.elasticsearch.username}
+      password: ${paip.elasticsearch.password}
+
+paip:
+  indices:
+    show: sys-log-*,mysql-slowlog-*,sys_user,point-log-*,audit-log-*
+  swagger:
+    enabled: true
+    title: 搜索服务
+    description: 搜索服务接口文档
+    version: 1.0
+    base-package: com.indusec.search.controller
