@@ -1,0 +1,82 @@
+### IntelliJ IDEA ignore
+.idea/
+*.ipr
+*.iml
+*.iws
+.externalToolBuilders/
+out/
+gen/
+
+### Eclipse
+.settings/
+.project
+.classpath
+**/*.project
+**/*.classpath
+**/*.settings
+
+
+### Hibernate - Spring
+.myhibernatedata
+hibernate.cfg.xml
+hibernate.reveng.xml
+.springBeans
+
+### Mac
+.DS_Store
+Thumbs.db
+
+### Temp
+!log/
+*.log
+*.cache
+*.diff
+*.patch
+*.tmp
+*.java~
+*.properties~
+*.xml~
+/.apt_generated/
+
+### Others
+logs/
+doc/
+bak/
+reports/
+RemoteSystemsTempFiles/
+Servers/
+/src/main/webapp/WEB-INF/classes/*
+/src/main/webapp/userfiles/*
+.mymetadata
+.checkstyle
+.gradle
+rebel.xml
+.tern-project
+.scannerwork/
+*velocity.log*
+*.versionsBackup
+*.launch
+*.bak
+*.swp
+*.ear
+*.rar
+.vscode/
+*.dat
+**/nacos/data/**
+
+### gitbook
+_book
+#tmp
+
+### Frontend
+node_modules/
+node_modules-bak/
+package-lock.json
+
+# 忽略一个文件夹下的部分文件夹，应该一个一个的标示
+paip-web/src/main/resources/static/style
+!paip-register-server/nacos/target
+!paip-register-server/nacos/target/nacos-server.jar
+
+### analysis
+Workwspanalysissrclog/

@@ -1,0 +1,25 @@
+package ${package}.${moduleName}.service;
+
+import ${package}.${moduleName}.model.${className};
+import com.indusec.common.model.PageResult;
+import ${package}.common.service.ISuperService;
+
+import java.util.Map;
+
+/**
+ * ${comments}
+ *
+ * @author: ${author}
+ * @email: ${email}
+ * @version: ${version}
+ * @since: ${datetime}
+ */
+public interface I${className}Service extends ISuperService<${className}> {
+    /**
+     * 列表
+     * @param params
+     * @return
+     */
+    PageResult<${className}> findList(Map<String, Object> params);
+}
+

@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <contextName>${APP_NAME}</contextName>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+
+    <springProperty name="APP_NAME" scope="context" source="spring.application.name"/>
+    <springProperty name="LOG_FILE" scope="context" source="logging.file" defaultValue="/var/log/paip/service/${APP_NAME}"/>
+
+    <springProperty name="LOG_POINT_FILE" scope="context" source="logging.file" defaultValue="/var/log/paip/point"/>
+    <springProperty name="LOG_AUDIT_FILE" scope="context" source="logging.file" defaultValue="/var/log/paip/audit"/>
+    <springProperty name="LOG_MAXFILESIZE" scope="context" source="logback.filesize" defaultValue="50MB"/>
+    <springProperty name="LOG_FILEMAXDAY" scope="context" source="logback.filemaxday" defaultValue="30"/>
+    <springProperty name="logback.totalSizeCap" scope="context" source="logback.totalSizeCap" defaultValue="2GB" />
+    <springProperty name="ServerIP" scope="context" source="spring.cloud.client.ip-address" defaultValue="0.0.0.0"/>
+    <springProperty name="ServerPort" scope="context" source="server.port" defaultValue="0000"/>
+
+    <!-- 彩色日志 -->
+    <!-- 彩色日志依赖的渲染类 -->
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
+    <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
+    <conversionRule conversionWord="wEx" converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter" />
+
+    <!-- 彩色日志格式 -->
+    <property name="CONSOLE_LOG_PATTERN" value="[${APP_NAME}:${ServerIP}:${ServerPort}] %clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%level){blue} %clr(${PID}){magenta} %clr([%X{traceId}-%X{spanId}]){yellow} %clr([%thread]){orange} %clr(%-40.40logger{39}){cyan} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}" />
+    <property name="CONSOLE_LOG_PATTERN_NO_COLOR" value="[${APP_NAME}:${ServerIP}:${ServerPort}] %d{yyyy-MM-dd HH:mm:ss.SSS} %level ${PID} [%X{traceId}-%X{spanId}] [%thread] %-40.40logger{39} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}" />
+
+    <!-- 控制台日志 -->
+    <appender name="StdoutAppender" class="ch.qos.logback.core.ConsoleAppender">
+        <withJansi>true</withJansi>
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 按照每天生成常规日志文件 -->
+    <appender name="FileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_FILE}/${APP_NAME}.log</file>
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN_NO_COLOR}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <!-- 基于时间的分包策略 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_FILE}/${APP_NAME}.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <!--保留时间,单位:天-->
+            <maxHistory>${LOG_FILEMAXDAY}</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${LOG_MAXFILESIZE}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <totalSizeCap>${logback.totalSizeCap}</totalSizeCap>
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+        </rollingPolicy>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+        </filter>
+        <!--
+        <encoder charset="UTF-8" class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <timestamp>
+                    <timeZone>UTC</timeZone>
+                </timestamp>
+                <pattern>
+                    <pattern>
+                        {
+                        "severity": "%level",
+                        "service": "${APP_NAME:-}",
+                        "trace": "%X{traceId:-}",
+                        "span": "%X{spanId:-}",
+                        "exportable": "%X{X-Span-Export:-}",
+                        "pid": "${PID:-}",
+                        "thread": "%thread",
+                        "class": "%logger{40}",
+                        "rest": "%message"
+                        }
+                    </pattern>
+                </pattern>
+            </providers>
+        </encoder>
+        -->
+    </appender>
+
+    <appender name="point_log" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_POINT_FILE}/point.log</file>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS}|${APP_NAME}|%msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <!-- 基于时间的分包策略 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_POINT_FILE}/point.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <!--保留时间,单位:天-->
+            <maxHistory>${LOG_FILEMAXDAY}</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${LOG_MAXFILESIZE}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="audit_log" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_AUDIT_FILE}/audit.log</file>
+        <encoder>
+            <pattern>%msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <!-- 基于时间的分包策略 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_AUDIT_FILE}/audit.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <!--保留时间,单位:天-->
+            <maxHistory>${LOG_FILEMAXDAY}</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>${LOG_MAXFILESIZE}</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+
+    <!-- 异步输出日志, 挺高性能 -->
+    <appender name="file_async" class="ch.qos.logback.classic.AsyncAppender">
+        <!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->
+        <discardingThreshold>0</discardingThreshold>
+        <appender-ref ref="FileAppender"/>
+    </appender>
+
+    <appender name="point_log_async" class="ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold>
+        <appender-ref ref="point_log"/>
+    </appender>
+
+    <appender name="audit_log_async" class="ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold>
+        <appender-ref ref="audit_log"/>
+    </appender>
+
+    <logger name="com.indusec.log.monitor" level="debug" addtivity="false">
+        <appender-ref ref="point_log_async" />
+    </logger>
+
+    <logger name="com.indusec.log.service.impl.LoggerAuditServiceImpl" level="debug" addtivity="false">
+        <appender-ref ref="audit_log_async" />
+    </logger>
+
+    <!-- MyBatis log configure -->
+    <logger name="com.apache.ibatis" level="INFO"/>
+    <logger name="org.mybatis.spring" level="INFO"/>
+    <logger name="java.sql.Connection" level="INFO"/>
+    <logger name="java.sql.Statement" level="INFO"/>
+    <logger name="java.sql.PreparedStatement" level="INFO"/>
+    <logger name="org.apache.ibatis.io" level="INFO"/>
+    <logger name="com.baomidou.mybatisplus" level="INFO"/>
+
+    <!-- 减少部分debug日志 -->
+    <logger name="druid.sql" level="INFO"/>
+    <logger name="org.springframework" level="INFO"/>
+    <logger name="org.springframework.context" level="WARN"/>
+    <logger name="org.springframework.beans" level="WARN"/>
+    <logger name="org.springframework.session.web" level="WARN"/>
+    <logger name="org.springframework.security" level="info"/>
+    <logger name="org.apache.velocity" level="INFO"/>
+    <logger name="springfox.documentation" level="INFO"/>
+    <logger name="org.hibernate.validator" level="INFO"/>
+    <!-- cache INFO -->
+    <logger name="net.sf.ehcache" level="INFO"/>
+    <logger name="org.springframework.cache" level="INFO"/>
+    <!-- cloud -->
+    <logger name="io.undertow" level="INFO"/>
+    <logger name="org.apache.http" level="INFO"/>
+    <logger name="com.netflix.discovery" level="INFO"/>
+    <logger name="com.netflix.eureka" level="INFO"/>
+    <logger name="com.netflix.loadbalancer" level="INFO"/>
+    <logger name="org.apache.kafka" level="WARN"/>
+    <!-- 减少nacos日志 -->
+    <logger name="com.alibaba.nacos" level="ERROR"/>
+    <logger name="com.alibaba.nacos.client.naming" level="off"/>
+
+    <!-- 应用启动日志，需要输出到 console -->
+    <logger name="SpringBootApplication" level="INFO" additivity="false">
+        <appender-ref ref="CONSOLE" />
+    </logger>
+    <logger name="org.springframework.boot" level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+
+    <!-- root级别INFO   个人开发打开STDOUT、测试用TRACE -->
+    <root level="INFO">
+        <!-- 控制台输出 -->
+        <appender-ref ref="StdoutAppender"/>
+        <!-- 文件输出 -->
+        <appender-ref ref="file_async"/>
+        <appender-ref ref="point_log_async"/>
+        <appender-ref ref="audit_log_async"/>
+    </root>
+
+</configuration>

@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    url: jdbc:mysql://${paip.datasource.ip}:3306/paip?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai
+    username: ${paip.datasource.username}
+    password: ${paip.datasource.password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+mybatis-plus:
+  mapper-locations: classpath:/mapper/*Mapper.xml
+  #实体扫描，多个package用逗号或者分号分隔
+  typeAliasesPackage: com.indusec.system.model
+  global-config:
+    db-config:
+      id-type: INPUT
+paip:
+  # API文档服务
+  swagger:
+    enabled: true
+    title: 系统服务
+    description: 系统服务接口文档
+    version: 1.0
+    base-package: com.indusec.system.controller
+  #多租户配置
+  tenant:
+    enable: false

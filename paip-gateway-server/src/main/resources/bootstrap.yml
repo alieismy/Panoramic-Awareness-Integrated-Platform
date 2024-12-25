@@ -1,0 +1,13 @@
+server:
+  port: 9900
+  ## https 配置
+  ssl:
+    enabled: true
+    key-alias: paip
+    key-store-password: Abcd123456
+    key-store: classpath:paip.p12
+    key-store-type: PKCS12
+
+spring:
+  application:
+    name: gateway-server

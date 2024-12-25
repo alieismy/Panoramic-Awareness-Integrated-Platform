@@ -1,0 +1,4 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.indusec.common.feign.fallback.SysUserClientFallbackFactory,\
+com.indusec.common.lock.LockAspect,\
+com.indusec.common.utils.ApplicationContextHelper
